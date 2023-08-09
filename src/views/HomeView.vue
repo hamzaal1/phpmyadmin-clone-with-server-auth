@@ -1,4 +1,12 @@
 <script setup>
+import { ref } from 'vue'
+const host = ref('')
+const username = ref('')
+const password = ref('')
+
+const handleFormSubmite = async (event) => {
+  console.log('test')
+}
 </script>
 
 <template>
@@ -21,13 +29,14 @@
                     <p class="fw-medium text-muted">Welcome, please login.</p>
                     <form
                       class="js-validation-signin"
-                      action="be_pages_auth_all.html"
+                      v-on:submit.prevent="handleFormSubmite"
                       method="POST"
                     >
                       <div class="py-3">
                         <div class="mb-4">
                           <input
                             type="text"
+                            v-model="host"
                             class="form-control form-control-alt form-control-lg"
                             id="login-ip"
                             name="login-ip"
@@ -37,6 +46,7 @@
                         <div class="mb-4">
                           <input
                             type="text"
+                            v-model="username"
                             class="form-control form-control-alt form-control-lg"
                             id="login-username"
                             name="login-username"
@@ -46,6 +56,7 @@
                         <div class="mb-4">
                           <input
                             type="password"
+                            v-model="password"
                             class="form-control form-control-alt form-control-lg"
                             id="login-password"
                             name="login-password"
