@@ -14,13 +14,6 @@ export const useDatabasesStore = defineStore('databases', {
         return initialState;
     },
     getters: {
-        async getDatabasesAsync(state) {
-            const res = await axios.post('/databases', {
-                ...mysqlStore.mysql,
-            });
-            await this.saveDatabases(res.data?.databases);
-            return this.databases;
-        },
         getDatabases(state) {
             return this.databases;
         },

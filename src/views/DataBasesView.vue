@@ -1,29 +1,33 @@
 
 <script setup>
 import TableRecord from '@/components/TableRecord.vue'
+import axios from '@/utils/axios'
 import { useDatabasesStore } from '../stores/databases'
-import { onMounted, ref, watch } from 'vue'
+import { useMySQLConnectionStore } from '../stores/mysqlConnection'
+import { onMounted, ref, watchEffect } from 'vue'
 const name = ref('')
 const databases = ref([])
 const databaseStore = useDatabasesStore()
+const mysqlStore = useMySQLConnectionStore()
 
 const handleAddTable = async () => {
   try {
     await databaseStore.addDatabase(name.value)
-    const newdatabases = await databaseStore.getDatabasesAsync
-    databases.value = [...newdatabases]
-    // console.log(newdatabases)
-    // console.log(databases)
+    axios
+      .post('/databases', {
+        ...mysqlStore.mysql
+      })
+      .then((res) => (databases.value = res.data.databases));
     name.value = ''
   } catch (error) {}
 }
-watch(databases, () => {
+watchEffect(databases, () => {
   console.log('Databases updated:')
   console.log(databases.value)
 })
 
 onMounted(async () => {
-  databases.value = await databaseStore.getDatabasesAsync
+  databases.value = databaseStore.getDatabases
 })
 </script>
 
@@ -53,7 +57,7 @@ onMounted(async () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-if="databases.length">
              <TableRecord v-for="(schema,index) in databases" :table="schema.schema_name" :key="index" />
             </tbody>
           </table>
