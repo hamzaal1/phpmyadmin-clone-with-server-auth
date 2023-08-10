@@ -1,5 +1,8 @@
+import { useMySQLConnectionStore } from "../stores/mysqlConnection";
+
 export default async function auth(to, from, next) {
-    const isAuthenticated = false;
+    const mysqlStore = useMySQLConnectionStore();
+    const isAuthenticated = await mysqlStore.isConnected;
     if (to.name !== 'home' && !isAuthenticated) {
         next({ name: 'home' });
     }

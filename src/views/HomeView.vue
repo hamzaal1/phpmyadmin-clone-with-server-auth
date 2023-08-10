@@ -1,11 +1,36 @@
 <script setup>
 import { ref } from 'vue'
+import axios from '@/utils/axios'
+import { useRouter } from 'vue-router'
+import { useMySQLConnectionStore } from '@/stores/mysqlConnection'
+import { useDatabasesStore } from '@/stores/databases'
+
+const mysqlStore = useMySQLConnectionStore()
+const databasesStore = useDatabasesStore()
+
+const router = useRouter()
 const host = ref('')
 const username = ref('')
 const password = ref('')
-
-const handleFormSubmite = async (event) => {
-  console.log('test')
+const handleMySQLConnection = async (event) => {
+  try {
+    const res = await axios.post('/databases', {
+      host: host.value,
+      username: username.value,
+      password: password.value
+    })
+    if (res.data?.databases) {
+      mysqlStore.saveConnection({
+        host,
+        username,
+        password
+      })
+      databasesStore.saveDatabases(res.data.databases)
+      router.push({ name: 'databases' })
+    }
+  } catch (error) {
+    console.log(error)
+  }
 }
 </script>
 
@@ -29,7 +54,7 @@ const handleFormSubmite = async (event) => {
                     <p class="fw-medium text-muted">Welcome, please login.</p>
                     <form
                       class="js-validation-signin"
-                      v-on:submit.prevent="handleFormSubmite"
+                      v-on:submit.prevent="handleMySQLConnection"
                       method="POST"
                     >
                       <div class="py-3">
@@ -40,7 +65,7 @@ const handleFormSubmite = async (event) => {
                             class="form-control form-control-alt form-control-lg"
                             id="login-ip"
                             name="login-ip"
-                            placeholder="Host IP"
+                            placeholder="Host"
                           />
                         </div>
                         <div class="mb-4">
