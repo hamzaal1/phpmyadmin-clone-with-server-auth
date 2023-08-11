@@ -68,12 +68,9 @@ onMounted(async () => {
             <tbody v-if="databases.length">
               <tr v-for="(schema,index) in databases" :key="index" >
                 <td class="text-center fs-sm">{{ schema.schema_name }}</td>
-                <td class="d-flex gap-1">
+                <td class="d-flex gap-2">
                   <button @click="handleDeleteRecord(schema.schema_name)" class="text-danger border-0">
                     <i class="fa-solid fa-trash"></i>
-                  </button>
-                  <button class="text-primary border-0">
-                    <i class="fa-regular fa-pen-to-square"></i>
                   </button>
                   <router-link :to="`/databases/${schema.schema_name}`" class="text-warning border-0">
                     <i class="fa-solid fa-up-right-and-down-left-from-center"></i>

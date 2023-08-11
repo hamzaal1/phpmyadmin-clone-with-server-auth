@@ -76,17 +76,14 @@
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody v-for="(table,index) in tables" :key="index" >
-              <tr >
+            <tbody>
+              <tr v-for="(table,index) in tables" :key="index" >
                 <td class="text-center fs-sm">{{table}}</td>
                 <td class="d-flex gap-1">
                   <button class="text-danger border-0">
                     <i class="fa-solid fa-trash"></i>
                   </button>
-                  <button class="text-primary border-0">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                  </button>
-                  <router-link :to="`/databases/expanded/${table}`" class="text-warning border-0">
+                  <router-link :to="`/databases/${$route.params.schema_name}/${table}`" class="text-warning border-0">
                     <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
                   </router-link>
                 </td>

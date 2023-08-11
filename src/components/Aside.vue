@@ -7,7 +7,9 @@
             <span class="smini-visible">
               <i class="fa fa-circle-notch text-primary"></i>
             </span>
+           <router-link to="/databases" class="text-white">
             <span class="smini-hide fs-5 tracking-wider">OneUI</span>
+           </router-link>
           </a>
           <!-- END Logo -->
 
@@ -317,6 +319,7 @@
       </nav>
 </template>
 <script setup>
+import { RouterLink } from 'vue-router'
 </script>
 <style lang="">
 </style>
