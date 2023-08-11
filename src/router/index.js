@@ -12,6 +12,11 @@ const router = createRouter({
       path: '/databases',
       name: 'databases',
       component: () => import("@/views/DataBasesView.vue")
+    },
+    {
+      path: '/databases/:schema_name',
+      name: 'expanded_database',
+      component: () => import("@/views/ExpandedDatabaseView.vue")
     }
   ]
 })

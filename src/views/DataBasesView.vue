@@ -1,6 +1,6 @@
 
 <script setup>
-import TableRecord from '@/components/TableRecord.vue'
+import { RouterLink } from 'vue-router'
 import axios from '@/utils/axios'
 import { useDatabasesStore } from '../stores/databases'
 import { useMySQLConnectionStore } from '../stores/mysqlConnection'
@@ -17,9 +17,17 @@ const handleAddTable = async () => {
       .post('/databases', {
         ...mysqlStore.mysql
       })
-      .then((res) => (databases.value = res.data.databases));
+      .then((res) => (databases.value = res.data.databases))
     name.value = ''
   } catch (error) {}
+}
+const handleDeleteRecord = async (name) => {
+  await databaseStore.deleteDatabases(name)
+  axios
+    .post('/databases', {
+      ...mysqlStore.mysql
+    })
+    .then((res) => (databases.value = res.data.databases))
 }
 watchEffect(databases, () => {
   console.log('Databases updated:')
@@ -34,10 +42,10 @@ onMounted(async () => {
 <template lang="">
     <div class="block block-rounded">
         <div class="block-header block-header-default d-flex justfiy-content-between">
-          <h3 class="block-title">Dynamic Table <small>Full</small></h3>
+          <h3 class="block-title">Dynamic Database <small>Full</small></h3>
           <form v-on:submit.prevent="handleAddTable" method="POST" class="">
             <div class="input-group">
-              <input type="text" v-model="name" class="form-control form-control-alt" id="example-group4-input2-alt" name="example-group4-input2-alt" placeholder="new table" aria-label="Text input with dropdown button">
+              <input type="text" v-model="name" class="form-control form-control-alt" id="example-group4-input2-alt" name="example-group4-input2-alt" placeholder="new database" aria-label="Text input with dropdown button">
               <button class="btn btn-dark">
                <i class="fa-solid fa-plus "></i>
               </button>
@@ -58,7 +66,20 @@ onMounted(async () => {
               </tr>
             </thead>
             <tbody v-if="databases.length">
-             <TableRecord v-for="(schema,index) in databases" :table="schema.schema_name" :key="index" />
+              <tr v-for="(schema,index) in databases" :key="index" >
+                <td class="text-center fs-sm">{{ schema.schema_name }}</td>
+                <td class="d-flex gap-1">
+                  <button @click="handleDeleteRecord(schema.schema_name)" class="text-danger border-0">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                  <button class="text-primary border-0">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                  </button>
+                  <router-link :to="`/databases/${schema.schema_name}`" class="text-warning border-0">
+                    <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
+                  </router-link>
+                </td>
+                </tr>
             </tbody>
           </table>
         </div>

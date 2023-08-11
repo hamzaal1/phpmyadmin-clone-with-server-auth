@@ -12,6 +12,7 @@ const router = useRouter()
 const host = ref('')
 const username = ref('')
 const password = ref('')
+const errorText = ref('')
 const handleMySQLConnection = async (event) => {
   try {
     const res = await axios.post('/databases', {
@@ -29,7 +30,7 @@ const handleMySQLConnection = async (event) => {
       router.push({ name: 'databases' })
     }
   } catch (error) {
-    console.log(error)
+    errorText.value = 'Failed to establish Mysql connection'
   }
 }
 </script>
@@ -88,6 +89,7 @@ const handleMySQLConnection = async (event) => {
                             placeholder="Password"
                           />
                         </div>
+                        <p v-if="errorText !== ''" class="text-danger">{{ errorText }}</p>
                         <div class="mb-4">
                           <div class="form-check">
                             <input
