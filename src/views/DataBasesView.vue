@@ -12,6 +12,7 @@ const mysqlStore = useMySQLConnectionStore()
 
 const handleAddTable = async () => {
   try {
+    if (name.value.trim() === '') return
     await databaseStore.addDatabase(name.value)
     axios
       .post('/databases', {

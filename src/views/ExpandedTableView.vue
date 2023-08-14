@@ -32,9 +32,9 @@
                         <div class="block-content block-content-full">
                             <form action="be_forms_elements.html" method="POST" enctype="multipart/form-data" onsubmit="return false;">
                               <div class="">
-                                <p class="d-flex" v-for="(column,index) in table_column" :key="index">
-                                  <span class="col"> {{column.Field}}</span>
-                                  <input class="col" :type="column.Type.includes('date') ? 'date' : 'text' ">
+                                <p class="d-flex" v-for="(column,index) in table_column" :key="index" >
+                                  <span class="col" v-if="column.Field !== 'id'"> {{column.Field}}</span>
+                                  <input class="col" v-model="ValueArrays[column.Field]" v-if="column.Field !== 'id'" :type="column.Type.includes('date') ? 'date' : 'text' ">
                                 </p>
                               </div>
                             </form>
@@ -44,7 +44,7 @@
                   </div>
                   <div class="block-content block-content-full text-end bg-body">
                     <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Close</button>
-                    <button @click="handleNewTable()" type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Perfect</button>
+                    <button @click="handleNewRecord()" type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Perfect</button>
                   </div>
                 </div>
               </div>
@@ -66,11 +66,8 @@
                     {{ recorde[column.Field] }}
                   </td>
                   <td class="d-flex gap-1">
-                    <button @click="handleDeleteRecored(recorde.id)" class="text-danger border-0">
+                    <button @click="handleDeleteRecord(recorde.id)" class="text-danger border-0">
                       <i class="fa-solid fa-trash"></i>
-                    </button>
-                    <button class="text-primary border-0">
-                      <i class="fa-regular fa-pen-to-square"></i>
                     </button>
                   </td>
                 </tr>
@@ -87,13 +84,31 @@ import { useMySQLConnectionStore } from '../stores/mysqlConnection'
 const mysqlStore = useMySQLConnectionStore()
 const tables_recordes = ref([])
 const table_column = ref([])
+const filtersArray = ref([])
+const ValueArrays = ref({})
 const route = useRoute()
 
-const handleNewTable = () => {
-  console.log(rows_number)
+const handleNewRecord = () => {
+  filtersArray.value = table_column.value
+    .filter((field) => field.Field !== 'id')
+    .map((row, index) => ({
+      field: row.Field,
+      value: ValueArrays.value[row.Field]
+    }))
+  axios
+    .post("/databases/expande/table/add/record", {
+      ...mysqlStore.mysql,
+      schema_name: route.params.schema_name,
+      table: route.params.table,
+      records: filtersArray.value
+    })
+    .then((res) => console.log(res.data))
+    .then(() => {
+      fetchTableRecordes()
+    })
 }
 
-const handleDeleteRecored = async (id) => {
+const handleDeleteRecord = async (id) => {
   axios
     .post('/databases/expande/table/delete', {
       ...mysqlStore.mysql,
@@ -127,7 +142,8 @@ const fetchTableRecordes = () => {
 }
 
 watch(tables_recordes, (newRecords) => {
-  console.log('updated', newRecords)
+  // console.log('updated', newRecords)
+  // console.log(table_column)
 })
 
 onMounted(() => {

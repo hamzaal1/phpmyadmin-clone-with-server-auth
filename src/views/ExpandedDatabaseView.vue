@@ -35,7 +35,7 @@
                                 <div class="">
                                     <div class="mb-4">
                                         <label class="form-label" for="example-text-input">For primary Key</label>
-                                        <input type="text" class="form-control" id="example-text-input" name="example-text-input" placeholder="colmun name of primary key">
+                                        <input disabled type="text" class="form-control" id="example-text-input" name="example-text-input" placeholder="primarey key id">
                                     </div>
                                     <div v-for="(row,index) in rows_number" :key="index" class="mb-4 d-flex">
                                         <div class="col-8">
@@ -43,8 +43,8 @@
                                             <input v-model="row.name" class="form-control" id="example-text-input" name="example-text-input" placeholder="New Colmun">
                                         </div>
                                         <select v-model="row.type" class="form-control h-25 mt-4 py-2" name="" id="">
-                                            <option selected value="varchar">characters</option>
-                                            <option value="number">integer</option>
+                                            <option selected value="varchar(100)">characters</option>
+                                            <option value="int">integer</option>
                                             <option value="date">date</option>
                                         </select>
                                     </div>
@@ -60,7 +60,7 @@
                   </div>
                   <div class="block-content block-content-full text-end bg-body">
                     <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Close</button>
-                    <button @click="handleNewTable()" type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Perfect</button>
+                    <button @click="handleNewTable()" type="button" class="btn btn-sm btn-primary" data-bs-dismiss="modal">save</button>
                   </div>
                 </div>
               </div>
@@ -80,7 +80,7 @@
               <tr v-for="(table,index) in tables" :key="index" >
                 <td class="text-center fs-sm">{{table}}</td>
                 <td class="d-flex gap-1">
-                  <button class="text-danger border-0">
+                  <button @click="handleDeleteTable(table)" class="text-danger border-0">
                     <i class="fa-solid fa-trash"></i>
                   </button>
                   <router-link :to="`/databases/${$route.params.schema_name}/${table}`" class="text-warning border-0">
@@ -105,7 +105,27 @@ const rows_number = ref([])
 const route = useRoute()
 
 const handleNewTable = () => {
-  console.log(rows_number)
+  axios
+    .post('/databases/expande/table/add', {
+      ...mysqlStore.mysql,
+      schema_name: route.params.schema_name,
+      table_name: new_table.value,
+      rows: rows_number.value
+    })
+    .then((res) => console.log(res.data))
+    .then(() => fetchTables())
+  new_table.value = ''
+}
+
+const handleDeleteTable = (table_name) => {
+  axios
+    .post('/databases/expande/table/drop', {
+      ...mysqlStore.mysql,
+      schema_name: route.params.schema_name,
+      table_name
+    })
+    .then((res) => console.log(res.data))
+    .then(() => fetchTables())
 }
 
 const fetchTables = () => {
