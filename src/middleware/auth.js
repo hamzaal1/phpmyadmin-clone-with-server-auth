@@ -6,7 +6,7 @@ export default async function auth(to, from, next) {
     if (to.name !== 'home' && !isAuthenticated) {
         next({ name: 'home' });
     }
-    if (to.name == 'home' && isAuthenticated) {
+    else if (to.name == 'home' && isAuthenticated) {
         next({ name: 'databases' });
     }
     else { next() }

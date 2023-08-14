@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axios_instance = axios.create({
-    baseURL: 'https://phpmyadmin-clone-backend.vercel.app'
+    baseURL: 'http://localhost:4000'
 });
 
 export default axios_instance;

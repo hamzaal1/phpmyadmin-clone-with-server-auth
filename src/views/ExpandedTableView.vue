@@ -91,7 +91,7 @@ const route = useRoute()
 const handleNewRecord = () => {
   filtersArray.value = table_column.value
     .filter((field) => field.Field !== 'id')
-    .map((row, index) => ({
+    .map((row) => ({
       field: row.Field,
       value: ValueArrays.value[row.Field]
     }))
@@ -141,7 +141,7 @@ const fetchTableRecordes = () => {
     .then((res) => (tables_recordes.value = res.data.tables_recordes))
 }
 
-watch(tables_recordes, (newRecords) => {
+watch(tables_recordes, () => {
   // console.log('updated', newRecords)
   // console.log(table_column)
 })

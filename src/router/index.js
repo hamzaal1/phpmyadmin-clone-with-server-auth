@@ -22,8 +22,10 @@ const router = createRouter({
       path: '/databases/:schema_name/:table',
       name: 'expanded_table',
       component: () => import("@/views/ExpandedTableView.vue")
-    }
+    },
   ]
 })
+
+
 
 export default router

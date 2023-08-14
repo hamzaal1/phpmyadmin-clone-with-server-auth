@@ -95,7 +95,7 @@
 </template>
 <script setup>
 import axios from '@/utils/axios'
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMySQLConnectionStore } from '../stores/mysqlConnection'
 const mysqlStore = useMySQLConnectionStore()

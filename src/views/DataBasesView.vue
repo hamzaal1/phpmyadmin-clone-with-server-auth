@@ -18,9 +18,14 @@ const handleAddTable = async () => {
       .post('/databases', {
         ...mysqlStore.mysql
       })
-      .then((res) => (databases.value = res.data.databases))
+      .then((res) => {
+        databases.value = res.data.databases
+        databaseStore.saveDatabases(res.data.databases)
+      })
     name.value = ''
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 }
 const handleDeleteRecord = async (name) => {
   await databaseStore.deleteDatabases(name)

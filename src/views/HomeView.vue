@@ -13,7 +13,7 @@ const host = ref('')
 const username = ref('')
 const password = ref('')
 const errorText = ref('')
-const handleMySQLConnection = async (event) => {
+const handleMySQLConnection = async () => {
   try {
     const res = await axios.post('/databases', {
       host: host.value,
